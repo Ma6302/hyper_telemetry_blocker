@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.2.2（2026-11-11）
+
+- 修掉「旧看门狗杀不死」：`watchdog_stop()` 原来只发一次 SIGTERM 就记「已停止」，但 mksh 在 `sleep` 里收到 TERM 不会立刻退出（要等 sleep 返回，最长 1800 秒）——实测因此残留过第二只看门狗，两个实例同时纠正属性。
+- 现在 TERM 后轮询 3 秒、未退出则 `kill -9` 并复核；`watchdog.sh` 启动时还会先清理本模块的其它残留实例。
+- 脚本行为对 MiSight 的处置无变化，升级不需要重启。
+
 ## v1.2.1（2026-11-11）
 
 - 接入**在线更新**：`module.prop` 增加 `updateJson`，指向本仓库的 `main/update.json`。KernelSU 模块页检测到更高 `versionCode` 时出现「更新」按钮，点击即从 GitHub Release 下载 zip 并自动安装。
